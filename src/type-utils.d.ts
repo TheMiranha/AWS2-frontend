@@ -1,0 +1,1 @@
+export type SetStore<T> = (e: T) => void
