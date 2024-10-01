@@ -67,7 +67,7 @@ export function ECRImagesPage() {
     if (!images) return false
 
     let filtered = [...images.images]
-    filtered = filtered.filter(image => image.RepoTags[0].toLowerCase().includes(name.toLowerCase()))
+    filtered = filtered.filter(image => image.RepoTags[0]?.toLowerCase().includes(name.toLowerCase()))
     if (minSize.length > 0) {
       filtered = filtered.filter(image => convertToMB(image.Size) >= parseFloat(minSize))
     }
@@ -88,6 +88,11 @@ export function ECRImagesPage() {
     setCurrentAction(null)
     setCurrentImage(null)
     toast.info('Você será notificado(a) assim que a imagem for removida.')
+  }
+
+  const getImageName = (image: Image) => {
+    const name = image.RepoDigests[0] ? image.RepoDigests[0].split('@')[0] : image.RepoTags[0]
+    return name?.length > 0 ? name : 'Sem nome';
   }
 
   if (isLoading) {
@@ -182,7 +187,7 @@ export function ECRImagesPage() {
                 filteredData.map(image => (
                   <TableRow key={image.Id}>
                     <TableCell>{image.Id}</TableCell>
-                    <TableCell>{image.RepoDigests[0] ? image.RepoDigests[0].split('@')[0] : image.RepoTags[0]}</TableCell>
+                    <TableCell>{getImageName(image)}</TableCell>
                     <TableCell>{convertToMB(image.Size).toFixed(3)}MB</TableCell>
                     <TableCell>
                       <Tooltip>
